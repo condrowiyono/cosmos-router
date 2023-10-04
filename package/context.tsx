@@ -15,15 +15,15 @@ type ContextType = {
   matchedPathname?: string;
 };
 
-type RouterObject = {
+type RouteObject = {
   path: string;
   element?: ReactElement;
-  children?: RouterObject[];
+  children?: RouteObject[];
   exact?: boolean;
 };
 
 type RouterProviderProps = {
-  router?: RouterObject[];
+  router?: RouteObject[];
 };
 
 const Context = createContext<ContextType>({
@@ -34,27 +34,24 @@ const RouterProvider = ({ router }: RouterProviderProps) => {
   const [route, setRoute] = useState(new URL(window.location.href));
 
   const flattenedRouter = useMemo(() => flatten(router ?? []), [router]);
-  const { matches } = useMemo(
+  const matchedRoute = useMemo(
     () => findElement(flattenedRouter, route.pathname),
     [flattenedRouter, route.pathname]
   );
 
-  const lastMatchRoute = matches?.[matches.length - 1];
+  const lastMatchRoute =
+    matchedRoute?.matches?.[matchedRoute.matches.length - 1];
 
-  const element = matches ? (
-    matches.reduceRight(
-      (outlet, match) => (
-        <RenderedRoute
-          outlet={outlet}
-          match={match}
-          matches={matches}
-          children={match.element ? match.element : outlet}
-        />
-      ),
-      null as ReactElement | null
-    )
-  ) : (
-    <div>404</div>
+  const element = matchedRoute?.matches?.reduceRight(
+    (outlet, match) => (
+      <RenderedRoute
+        outlet={outlet}
+        match={match}
+        matches={matchedRoute.matches}
+        children={match.element ? match.element : outlet}
+      />
+    ),
+    null as ReactElement | null
   );
 
   useEffect(() => {
@@ -73,10 +70,10 @@ const RouterProvider = ({ router }: RouterProviderProps) => {
         matchedPathname: lastMatchRoute?.path,
       }}
     >
-      {element}
+      {element ?? <div>404</div>}
     </Context.Provider>
   );
 };
 
 export { Context, RouterProvider };
-export type { RouterObject };
+export type { RouteObject };

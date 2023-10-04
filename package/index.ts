@@ -8,7 +8,7 @@ import useOutlet from "./hooks/useOutlet";
 import useParams from "./hooks/useParams";
 import useSearchState from "./hooks/useSearchState";
 
-import type { RouterObject } from "./context";
+import type { RouteObject } from "./context";
 
 export {
   RouterProvider,
@@ -20,4 +20,4 @@ export {
   useSearchState,
 };
 
-export type { RouterObject };
+export type { RouteObject };

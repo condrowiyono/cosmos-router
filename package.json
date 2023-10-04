@@ -1,5 +1,5 @@
 {
-  "name": "cosmos-router",
+  "name": "cosmos-route",
   "version": "0.0.1",
   "description": "Simple yet transparent react router",
   "main": "dist/cjs/index.js",
@@ -9,6 +9,9 @@
   "files": [
     "dist"
   ],
+  "scripts": {
+    "build": "rollup -c"
+  },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^25.0.2",
     "@rollup/plugin-node-resolve": "^15.1.0",

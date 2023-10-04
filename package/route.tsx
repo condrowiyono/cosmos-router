@@ -1,9 +1,9 @@
 import { ReactElement, createContext } from "react";
-import { RouterObject } from "./context";
+import { RouteObject } from "./context";
 
 type RouteContextType = {
   outlet: ReactElement | null;
-  matches: RouterObject[];
+  matches: RouteObject[];
 };
 
 const RouteContext = createContext<RouteContextType>({

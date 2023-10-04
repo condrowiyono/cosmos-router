@@ -1,10 +1,10 @@
 import { ReactElement, ReactNode } from "react";
-import { RouterObject } from "../context";
+import { RouteObject } from "../context";
 import { RouteContext } from "../route";
 
 type RenderedRouteType = {
-  matches?: RouterObject[];
-  match: RouterObject;
+  matches?: RouteObject[];
+  match: RouteObject;
   outlet: ReactElement;
   children?: ReactNode | null;
 };

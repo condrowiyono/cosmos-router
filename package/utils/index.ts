@@ -1,6 +1,6 @@
-import { RouterObject } from "../context";
+import { RouteObject } from "../context";
 
-type RouterObjectWithMatches = RouterObject & { matches?: RouterObject[] };
+type RouteObjectWithMatches = RouteObject & { matches?: RouteObject[] };
 
 const splitPath = (path: string) => {
   return path
@@ -9,13 +9,13 @@ const splitPath = (path: string) => {
     .map((segment) => "/" + segment);
 };
 
-const flatten = (router: RouterObject[]) => {
-  let result: RouterObjectWithMatches[] = [];
+const flatten = (router: RouteObject[]) => {
+  let result: RouteObjectWithMatches[] = [];
 
   const transverse = (
-    routes: RouterObjectWithMatches[],
+    routes: RouteObjectWithMatches[],
     parentPath: string,
-    parentMatches?: RouterObjectWithMatches[]
+    parentMatches?: RouteObjectWithMatches[]
   ) => {
     for (const route of routes) {
       const { path: currentPath, element, children, exact } = route;
@@ -38,21 +38,40 @@ const flatten = (router: RouterObject[]) => {
   return result;
 };
 
-const findElement = (router: RouterObjectWithMatches[], pathname: string) => {
+const findElement = (router: RouteObjectWithMatches[], pathname: string) => {
   const pathSegments = splitPath(pathname);
 
   const matches = router.find((route) => {
-    return pathSegments.every((segment, index) => {
-      const routeSegment = splitPath(route.path);
-      const wildcard = routeSegment[index]?.slice(1).startsWith(":");
+    let found = false;
 
-      if (wildcard) return true;
-      return segment === routeSegment[index];
-    });
+    for (const [index, segment] of pathSegments.entries()) {
+      const routeSegment = splitPath(route.path);
+      const colonWildcard = routeSegment[index]?.slice(1).startsWith(":");
+      const asteriskWildcard = routeSegment[index]?.startsWith("*");
+
+      if (colonWildcard) {
+        found = true;
+        continue;
+      }
+
+      if (asteriskWildcard) {
+        found = true;
+        break;
+      }
+
+      if (segment !== routeSegment[index]) {
+        found = false;
+        break;
+      }
+
+      found = true;
+    }
+
+    return found;
   });
 
   return matches;
 };
 
 export { flatten, findElement };
-export type { RouterObjectWithMatches };
+export type { RouteObjectWithMatches };
